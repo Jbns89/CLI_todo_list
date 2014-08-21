@@ -8,7 +8,7 @@
  	foreach ($list as $items_list => $activity)    
 		{
 			$items_list++;
-			$list_todo=$list_todo."[{$items_list}] {$activity} ".PHP_EOL;
+			$list_todo=$list_todo."[{$items_list}] {$activity} " . PHP_EOL;
 		}
 
  	return $list_todo;
@@ -64,34 +64,36 @@
      switch ($input) 
      {
         case 'F':
-            array_shift($items);
+            $remove_top=array_shift($items);
+            echo "\nYou removed $remove_top item." . PHP_EOL;
             break;
         case 'L':
-            array_pop($items);
+            $remove_bottom=array_pop($items);
+            echo "\nYou removed $remove_bottom item." . PHP_EOL;
             break;
         case 'N':
-            echo 'Do you want to add an item to the (T)op or (B)ottom of your list? '.PHP_EOL;   
+            echo 'Do you want to add an item to the (T)op or (B)ottom of your list? ' . PHP_EOL;   
             $input_tb = get_input(TRUE);
             if ($input_tb == 'T') 
             {
-                echo 'Please enter your item'.PHP_EOL;
+                echo 'Please enter your item' . PHP_EOL;
                 array_unshift($items,get_input());
                 
             }
             elseif($input_tb == 'B')
             {
-                echo 'Please enter your item'.PHP_EOL;
+                echo 'Please enter your item' . PHP_EOL;
                 array_push($items,get_input());
             } 
             break;
         case 'R':
-            echo 'Enter item number to remove: '.PHP_EOL;
+            echo 'Enter item number to remove: ' . PHP_EOL;
             $key = get_input();                                                      
             unset($items[--$key]);                                                  
             $items=array_values($items);
             break;
         case 'S':
-            echo 'Do you want to sort (A)-Z , (Z)-A, (O)rder entered, (R)everse order entered'.PHP_EOL;
+            echo 'Do you want to sort (A)-Z , (Z)-A, (O)rder entered, (R)everse order entered' . PHP_EOL;
             $items=sort_menu($items);
             break;
      }
