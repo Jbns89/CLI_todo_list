@@ -1,34 +1,46 @@
  <?php
+ 
  // Create an empty array to hold list of todo items
  // and save them
  $items = array();
- function list_items($list)		//you can use foreach inside 
- {								//a function to list items
- 	$list_todo = '';			// reference foreach_books
- 	foreach ($list as $items_list => $activity)    
-		{
-			$items_list++;
-			$list_todo=$list_todo."[{$items_list}] {$activity} " . PHP_EOL;
-		}
+ 
+ function list_items($list)      
+ {                              
+    //you can use foreach inside
+    //a function to list items
+    // reference foreach_books
+    $list_todo = '';            
+    foreach ($list as $items_list => $activity)    
+    {
+        $items_list++;
+        $list_todo = $list_todo ."[{$items_list}] {$activity} " . PHP_EOL;
+    }
 
- 	return $list_todo;
+    return $list_todo;
  }
+ 
  function get_input($upper = FALSE)
  {
-     // You can also do terinary vs. if/else statement
-     if ($upper)		          // convert to uppercase if $upper is true
-     {						    //dont need to put $upper=true inside if statement
-     	$input=trim(fgets(STDIN));   //because it is already checking for that
+    // You can also do terinary vs. if/else statement
+    // <- convert to uppercase if $upper is true
+    //<- dont need to put $upper=true inside if condition
+    //because it is already checking for that
+     
+     if ($upper)                  
+     {                      
+        $input = trim(fgets(STDIN));
      }
      else
      {
-     	$input=trim(fgets(STDIN));
+        $input = trim(fgets(STDIN));
      }
-     return ucfirst($input);   // Return STDIN input ucfirst to capitilize 1rst letter     
+     // Return STDIN input ucfirst to capitilize 1rst letter 
+     return ucfirst($input);
  }
+ 
  function sort_menu($items)
  {
-    $input_sort=get_input(TRUE);
+    $input_sort = get_input(TRUE);
     
     switch($input_sort) 
 
@@ -55,20 +67,71 @@
         } 
         return $items; 
  }
+
+//Can use file function instead of doing
+// most of this function here. 
+ function open_file($file) 
+ {                              
+    $handle = fopen($file, 'r');
+    $content = trim(fread($handle,filesize($file)));
+    fclose($handle);
+    return $add_list = explode("\n",$content);
+ }
+ 
  do {     
-     echo "\n~~~~~~~~~~~~~~~~~~~~~~~~\nYour to do list for today:\n".PHP_EOL;
-     echo list_items($items); 	                                                 // Echo the list produced by the function
-     echo '(N)ew item, (R)emove item, (S)ort, (Q)uit : ';
+     echo "\n~~~~~~~~~~~~~~~~~~~~~~~~\nYour to do list for today:\n" . PHP_EOL;
+     echo list_items($items);
+     echo '(N)ew item, (R)emove item, (S)ort, (O)pen, s(A)ve, (Q)uit : ';
      $input = get_input(TRUE);
 
      switch ($input) 
      {
+        case 'A':
+            echo 'Where would you like to save this file?' . PHP_EOL;
+            $file_name = trim(fgets(STDIN));
+            if (file_exists($file_name)) 
+            {
+                echo "\nThis file exists, do you want to overwrite it? (y/n)" . PHP_EOL;
+                $input = ucfirst(trim(fgets(STDIN)));
+                if ($input == 'Y') 
+                {
+                    $handle = fopen($file_name, 'w');
+                    foreach ($items as $item) 
+                    {
+                        fwrite($handle, PHP_EOL . $item);
+                    }
+                    fclose($handle);
+                    echo "\n**To Do List Saved**" . PHP_EOL;
+                }
+                else
+                {
+                    echo "\n**To Do List Unsaved**" . PHP_EOL;
+                    break;
+                }
+            }
+            else
+            {
+                $handle = fopen($file_name, 'w');
+                foreach ($items as $item) 
+                {
+                    fwrite($handle, PHP_EOL . $item);
+                }
+                fclose($handle);
+                echo "\n**To Do List Saved**" . PHP_EOL;
+            }
+            break;
+        case 'O':
+            echo 'Which file would you like to open?' . PHP_EOL;
+            $file = trim(fgets(STDIN)); //you can also do $file='data/' . trim(fgets(STDIN));
+            $new_list = open_file($file);   //so user doesnt only needs to type list.txt
+            $items = array_merge($items, $new_list);           
+            break;
         case 'F':
-            $remove_top=array_shift($items);
+            $remove_top = array_shift($items);
             echo "\nYou removed $remove_top item." . PHP_EOL;
             break;
         case 'L':
-            $remove_bottom=array_pop($items);
+            $remove_bottom = array_pop($items);
             echo "\nYou removed $remove_bottom item." . PHP_EOL;
             break;
         case 'N':
@@ -90,17 +153,18 @@
             echo 'Enter item number to remove: ' . PHP_EOL;
             $key = get_input();                                                      
             unset($items[--$key]);                                                  
-            $items=array_values($items);
+            $items = array_values($items);
             break;
         case 'S':
             echo 'Do you want to sort (A)-Z , (Z)-A, (O)rder entered, (R)everse order entered' . PHP_EOL;
-            $items=sort_menu($items);
+            $items = sort_menu($items);
             break;
      }
 
- } while ($input != 'Q');				
+ } while ($input != 'Q');
  echo "Goodbye!\n";
- exit(0); // Exit with 0 errors
+ // Exit with 0 errors
+ exit(0); 
 
 
 
