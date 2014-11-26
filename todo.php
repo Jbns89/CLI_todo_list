@@ -87,8 +87,9 @@
      switch ($input) 
      {
         case 'A':
-            echo 'Where would you like to save this file?' . PHP_EOL;
-            $file_name = trim(fgets(STDIN));
+            echo 'What would you like to name this file?' . PHP_EOL;
+            $file = trim(fgets(STDIN));
+            $file_name = "data/$file" . ".txt";
             if (file_exists($file_name)) 
             {
                 echo "\nThis file exists, do you want to overwrite it? (y/n)" . PHP_EOL;
@@ -122,9 +123,17 @@
             break;
         case 'O':
             echo 'Which file would you like to open?' . PHP_EOL;
-            $file = trim(fgets(STDIN)); //you can also do $file='data/' . trim(fgets(STDIN));
-            $new_list = open_file($file);   //so user doesnt only needs to type list.txt
-            $items = array_merge($items, $new_list);           
+            $filename = trim(fgets(STDIN)); //you can also do $file='data/' . trim(fgets(STDIN));
+            $file = "data/$filename" . ".txt";
+            if (file_exists($file))
+            {
+                $new_list = open_file($file);   //so user doesnt only needs to type list.txt
+                $items = array_merge($items, $new_list);           
+            }
+            else 
+            {
+                echo "Sorry that file doesn't exist";
+            }
             break;
         case 'F':
             $remove_top = array_shift($items);
